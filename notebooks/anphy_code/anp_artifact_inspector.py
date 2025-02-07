@@ -49,15 +49,16 @@ def main():
     
     summary_rows = []
     subject_bad_electrodes = defaultdict(list)
-    subjects_with_all_bad_electrodes = 0  # Counter for subjects with all electrodes flagged as poor
-    
-    for file_name, data_dict in artifact_data.items():
+    subjects_with_all_bad_electrodes = 0  # Counter for subjects with all bad electrodes
+    bad_subjects = []  # List to store (index, filename) of subjects with all bad electrodes
+
+    for idx, (file_name, data_dict) in enumerate(artifact_data.items()):
         if "artifact_matrix" in data_dict:
             matrix = data_dict["artifact_matrix"]
         else:
             matrix = list(data_dict.values())[0]
         
-        channel_stats, bad_epoch_indices = analyze_artifact_matrix(matrix, good_threshold=0.9)
+        channel_stats, bad_epoch_indices = analyze_artifact_matrix(matrix, good_threshold=0.90)
         
         print(f"Results for {file_name}:")
         print("Channel stats (channel_index, fraction_artifact_free, quality):")
@@ -83,6 +84,7 @@ def main():
         # Check if all electrodes for this subject are flagged as "poor"
         if num_poor_channels == len(channel_stats):
             subjects_with_all_bad_electrodes += 1
+            bad_subjects.append((idx, file_name))  # Store index and filename
     
     summary_df = pd.DataFrame(summary_rows)
     output_csv = os.path.join(ARTIFACT_FOLDER, "artifact_summary.csv")
@@ -94,8 +96,12 @@ def main():
         bad_channels_sorted = sorted(bad_channels)
         print(f"Subject {subject_file}: Total Poor Electrodes = {len(bad_channels_sorted)}; Indices: {bad_channels_sorted}")
     
-    # Print count of subjects with all bad electrodes
+    # Print count and indices of subjects with all bad electrodes
     print(f"\nNumber of subjects with all electrodes flagged as 'poor': {subjects_with_all_bad_electrodes}")
+    if subjects_with_all_bad_electrodes > 0:
+        print("Indices and filenames of these subjects:")
+        for idx, filename in bad_subjects:
+            print(f"  Index: {idx}, Filename: {filename}")
 
 if __name__ == "__main__":
     main()
