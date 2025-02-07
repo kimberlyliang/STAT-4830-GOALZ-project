@@ -6,9 +6,9 @@ from anp_feat_extractor import ANPFeatExtractor
 
 def main():
     # 1. PATH SETTING
-    BASE_PATH = "/Users/tereza/spring_2025/STAT_4830/STAT-4830-GOALZ-project/data/ANPHY-Sleep"
+    BASE_PATH = "/Users/kimberly/Documents/STAT4830/STAT-4830-GOALZ-project/Anphy Dataset"
     DETAILS_CSV = os.path.join(BASE_PATH, "Details information for healthy subjects.csv")
-    RESULTS_DIR = "/Users/tereza/spring_2025/STAT_4830/STAT-4830-GOALZ-project/results"
+    RESULTS_DIR = "/Users/kimberly/Documents/STAT4830/STAT-4830-GOALZ-project/results"
     if not os.path.exists(RESULTS_DIR):
         os.makedirs(RESULTS_DIR)
     
