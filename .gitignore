@@ -6,6 +6,16 @@ docs/figures/*
 local/
 
 config/config.local.yaml
+cnt-codehub/
+uni2ts/
+
+*.mat
+*.edf
+*.csv
+*.txt
+*.h5
+
+results/anphy_features.csv
 
 *.mat
 *.edf
