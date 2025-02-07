@@ -6,3 +6,15 @@ docs/figures/*
 local/
 
 config/config.local.yaml
+
+*.mat
+*.edf
+*.edf.gz
+*.edf.bz2
+*.edf.tar
+*.edf.tar.gz
+*.edf.tar.bz2
+*.csv
+*.txt
+*.json
+
