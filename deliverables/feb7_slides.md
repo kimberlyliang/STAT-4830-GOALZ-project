@@ -5,6 +5,13 @@ description: A structured project writeup detailing methodology, implementation,
 theme: default
 paginate: true
 footer: "STAT 4830: Numerical Optimization | 02/07/2025"
+math: true
+style: |
+  /* More horizontal padding than vertical */
+  section {
+    padding: 0.5em 2em;
+    box-sizing: border-box;
+  }
 ---
 
 # **Optimizing Sleep Stage Classification**
@@ -97,9 +104,14 @@ where $ \hat{\phi} $ are the learned parameters of the predictive distribution.
 ---
 
 ## **4. What We'Ve Learned So Far**
-- 
+- We have started to understand what models our goals necessitate. Timeseries forecasting models like the Google timesFM approach do not fit our classification problem.
+- We learned about the MOIRA model's masked encoder approach and how it effectively captures temporal dependencies, which is applicable to our problem.
+- We now understand catch22 on a deeper level and think we can go back to our initial idea of using it together with the MOIRA model.
+- Additionally we learned processing full 24-hour EEG recordings is currently infeasible without significant optimization or additional hardware (e.g., GPUs). We expect data aggregation to be necessary in completing this project.
+- We will need to determine the optimal downsampled sampling rate that does not result in significant loss of information.
 
 ## **5. Current Progress**
+Current progress ties together with what we have learned by reading the literature and better understanding the problem. We have completed a modified pipeline which better fits our goal of timeseries classification. We are ready to run the MOIRA model on the data for preliminary results, which will be run on Colab's A100 GPU. However, we have limited compute units and this is not a sustainable option for computation.
 
 ## **6. Bottlenecks**
   - Catch22 feature extraction is computationally expensive.
@@ -108,18 +120,13 @@ where $ \hat{\phi} $ are the learned parameters of the predictive distribution.
   - Model may require evaluation on external datasets.
 ---
 
-### **Planned Improvements**
+### **7. Planned Improvements**
 - **Parallelization Strategies:**
   - Implement `joblib` or `multiprocessing` to speed up **feature extraction**.
 - **Deep Learning Extensions:**
   - Evaluate performance of **TCNs, CNNs, and GNNs** and potentially deploy ensemble methods on raw EEG signals.
 - **Hyperparameter Tuning:**
   - Optimize **epoch length, learning rate, embedding dimensions**.
-
----
-
-## **6. Repository Structure**
-### **Code Organization**
 
 ---
 
