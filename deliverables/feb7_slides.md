@@ -41,21 +41,21 @@ footer: "STAT 4830: Numerical Optimization | 02/07/2025"
 ## **3. Methodology**
 ### **3.1 Mathematical Formulation of the Optimization Problem**
 #### **Problem Setup:**
-Given an EEG time series \( Y \) with associated covariates \( Z \), we seek to predict the sleep stage \( S \) for future time steps using a learned function:
+Given an EEG time series $Y$ with associated covariates $Z$, we seek to predict the sleep stage $S$ for future time steps using a learned function:
 
-\[
+$$
 \hat{S}_t = f_{\theta}(Y_{t-l:t}, Z_{t-l:t+h})
-\]
+$$
 
 #### **Objective Function:**
-- We train \( f_{\theta} \) to maximize the **log-likelihood** of the predicted sleep stage distribution:
+- We train f_θ to maximize the **log-likelihood** of the predicted sleep stage distribution:
 
-\[
+$$
 \max_{\theta} \mathbb{E}_{(Y,Z) \sim p(D)} \mathbb{E}_{(t,l,h) \sim p(T \mid D)}
 \log p(S_{t:t+h} \mid \hat{\phi})
-\]
+$$
 
-where \( \hat{\phi} \) are the learned parameters of the predictive distribution.
+where $ \hat{\phi} $ are the learned parameters of the predictive distribution.
 
 ---
 
@@ -81,13 +81,13 @@ where \( \hat{\phi} \) are the learned parameters of the predictive distribution
 3. **Training Objective**
    - Train the model using **cross-entropy loss**:
 
-   \[
+   $$
    \text{loss} = - \frac{1}{N} \sum_{i=1}^{N} \sum_{k=1}^{K} y_i^k \log \hat{y}_i^k
-   \]
+   $$
 
    where:
-   - \( K \) is the number of sleep stages (at least wake and N1).
-   - \( \hat{y}_i^k \) is the predicted probability of sample \( i \) belonging to class \( k \).
+   - $K$ is the number of sleep stages (at least wake and N1).
+   - $\hat{y}_i^k$ is the predicted probability of sample $i$ belonging to class $k$.
 
 4. **Evaluation Metrics**
    - **Accuracy** of wake vs. N1 classification.
