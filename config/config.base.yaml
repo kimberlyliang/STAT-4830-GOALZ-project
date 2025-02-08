@@ -2,6 +2,11 @@
 project_name: "anphy_analysis"
 root_dir: "."
 
+# math rendering
+kramdown:
+    math_engine: mathjax
+    input: GFM
+
 # Data paths
 data:
   base_path: "${root_dir}/data/ANPHY-Sleep"
