@@ -62,7 +62,7 @@ where \( \hat{\phi} \) are the learned parameters of the predictive distribution
 ## **3.2 Implementation using MOIRA**
 ### **MOIRA: Masked Encoder-based Universal Time Series Forecasting Transformer**
 - **Why MOIRA?**
-  - **Handles multivariate time series** effectively using a **masked encoder architecture**.
+  - **Handles multivariate time series** effectively using a **masked encoder architecture**, which enables the model to concatenate the time series models and run them in a single data input.
   - **Learns from unobserved data (zero-shot learning)** to improve generalizability.
   - **Uses multi-patch projections** for capturing hierarchical temporal structures.
   - **Outputs probabilistic distributions** rather than single-point predictions.

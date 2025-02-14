@@ -1,6 +1,6 @@
 import os
 from gluonts.dataset.split import split
-from utils.data_loader import load_eeg_data, prepare_dataset
+from utils.model_data_loader import load_eeg_data, prepare_dataset
 from models.moirai_classifier import SleepStagePredictor
 from config.config import ModelConfig, DataConfig
 import matplotlib.pyplot as plt
