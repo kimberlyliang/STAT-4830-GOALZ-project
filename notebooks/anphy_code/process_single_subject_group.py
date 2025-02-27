@@ -82,7 +82,7 @@ def main(subject, group_index):
                 key = f"{subject.lower()}_{stage.lower()}_win_{j+1}_{ch_label.replace('-', '').replace(' ', '')}"
                 subject_windows[key] = {"window": ds_win, "time_index": t}
 
-    out_path = os.path.join(subj_path, f"{subject.lower()}_all_stages_group{group_index+1}.pkl")
+    out_path = os.path.join(subj_path, f"{subject.lower()}_all_stages_all_elds_group{group_index+1}.pkl")
     with open(out_path, "wb") as f:
         pickle.dump(subject_windows, f)
     print(f"Saved {len(subject_windows)} windows for {subject} (electrode group {group_index+1}) at {out_path}")
