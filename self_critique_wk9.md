@@ -19,6 +19,6 @@ While synthetic data is limited in our case, exploring advanced augmentation tec
 Inter-Subject Variability Handling:
 Implementing subject adaptation or domain adversarial training to better capture the individual variability in EEG patterns could help the model generalize its detection of N1 onset.
 
-Moreover, we have struggled to coordinate and determine and efficient mechanism to distribute work when we are working asynchronously, introducing substantial friction into our workflow and ultimately slowing down our productivity (don't tell DOGE). Hence, moving forward, we will need to develop a more streamlined way of passing updates about what we have been up to most recently to our other teammates so that others don't need to waste time 'catching up' on what has been done.
+Moreover, we have struggled to coordinate and determine and efficient mechanism to distribute work when we are working asynchronously, introducing substantial friction into our workflow and ultimately slowing down our productivity. Hence, moving forward, we will need to develop a more streamlined way of passing updates about what we have been up to most recently to our other teammates so that others don't need to waste time 'catching up' on what has been done.
 
 Additionally, now that we have been granted google cloud access, we should make sure to develop our pipeline more modularly so that we will be able to run additional analyses on validation datasets, which is crucial for proof-of-concept of our implementation.
