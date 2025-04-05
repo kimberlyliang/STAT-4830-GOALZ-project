@@ -88,11 +88,11 @@ Recognizing the underrepresentation of the N1 stage, we modified the loss functi
 
 ### Performance Impact
 Despite the sound theoretical motivation, the introduction of the multi-scale encoder and class weighting led to a decrease in overall performance.
-- Training Accuracy: ~79.03%  
-  - Validation Accuracy: ~80.37%  
-  - Macro F1 Score: ~53.74%  
-  - Cohen’s Kappa: ~0.4878  
-  - Per-Class F1: Wake: 0.25, N1: 0.36, N2: 0.78, N3: 0.73, REM: 0.54
+- Training Loss: ~0.5774  
+- Validation Accuracy: ~80.37%  
+- Macro F1 Score: ~53.74%  
+- Cohen’s Kappa: ~0.4878  
+- Per-Class F1: Wake: 0.25, N1: 0.36, N2: 0.78, N3: 0.73, REM: 0.54
 
 
 ## FUTURE WORK
