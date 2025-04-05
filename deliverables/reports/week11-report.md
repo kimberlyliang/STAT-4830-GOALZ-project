@@ -98,7 +98,7 @@ Despite the sound theoretical motivation, the introduction of the multi-scale en
 Initially, we implemented a one-vs-all scheme for all classes. In this approach, each class was given a dedicated binary classifier. The idea was to provide independent binary signals for each sleep stage, which could be fused with the learned representations from our CNN+Transformer model. While this approach offered a richer set of class-specific features, the overall performance gains were insignificant.
 
 ### Targeted One-vs-All Classifier for N1
-Given that the N1 stage consistently proved to be the most challenging, we refined our approach by applying the one-vs-all classifier exclusively to N1. This targeted implementation adds both a dedicated binary classifier and a residual head to produce a correction term specifically for the N1 logit. By focusing on the underrepresented and ambiguous N1 class, we observed more promising results in terms of improved discrimination, even though the overall impact was still an area for further tuning.
+Given that the N1 stage consistently proved to be the most challenging, we refined our approach by applying the one-vs-all classifier exclusively to N1. In this targeted implementation, we not only include a dedicated binary classifier for N1 but also integrate a residual head that learns a correction term for the N1 logit. This boosting mechanism adjusts the base prediction for N1, effectively refining the final output by compensating for systematic errors.
 
 ### Performance Impact
 We managed to increase the f1 score for N1 from around 61 to around 65. Slight decrease in performance for W and a slight increase for some others, but overall this is a good direction.
