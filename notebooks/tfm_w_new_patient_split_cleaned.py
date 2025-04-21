@@ -77,6 +77,7 @@ class SleepSequenceDataset(Dataset):
 class EpochEncoder(nn.Module):
     def __init__(self, embedding_dim):
         super(EpochEncoder, self).__init__()
+        # cnn architecture
         self.net = nn.Sequential(
             nn.Conv1d(in_channels=2, out_channels=16, kernel_size=50, stride=6),
             nn.ReLU(),
@@ -85,6 +86,7 @@ class EpochEncoder(nn.Module):
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=4, stride=4)
         )
+        
         #Passing dummy input to automatically calculate no. of features and avoid mismatch error
         with torch.no_grad():
             dummy_input = torch.zeros(1, 2, 3000)
@@ -337,7 +339,7 @@ from tqdm.notebook import tqdm
 
 # SPLIT BY PATIENT AND HAVE WHOLE NIGHT INSTEAD 
 
-def split_patients(data_dir, train_ratio=0.8, random_state=42):
+def split_patients(data_dir, train_ratio=0.8, random_state=515):
     """
     Split patients into train and test sets
     """

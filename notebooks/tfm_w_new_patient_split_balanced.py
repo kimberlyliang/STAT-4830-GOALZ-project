@@ -26,6 +26,8 @@ print("Files in directory:", os.listdir(DATA_DIR))
 # Model parameters
 BATCH_SIZE = 16
 NUM_EPOCHS = 20
+
+# does this matter??
 LEARNING_RATE = 1e-3
 TRAIN_VAL_SPLIT = 0.8
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -329,6 +331,30 @@ def split_patients(data_dir, train_ratio=0.8, random_state=42):
     
     return train_ids, test_ids
 
+def plot_sample(sample, label):
+    """
+    Plot a single sample from the dataset
+    """
+    # sample shape: (seq_len, channels, time_points)
+    fig, axes = plt.subplots(2, 1, figsize=(12, 6))
+    
+    # Plot EEG
+    axes[0].plot(sample[0, 0, :], label='EEG')
+    axes[0].set_title(f'EEG Signal (Label: {label})')
+    axes[0].set_xlabel('Time Points')
+    axes[0].set_ylabel('Amplitude')
+    axes[0].legend()
+    
+    # Plot EOG
+    axes[1].plot(sample[0, 1, :], label='EOG', color='orange')
+    axes[1].set_title('EOG Signal')
+    axes[1].set_xlabel('Time Points')
+    axes[1].set_ylabel('Amplitude')
+    axes[1].legend()
+    
+    plt.tight_layout()
+    plt.show()
+
 def main():
     # Split patients into train and test sets
     train_patients, test_patients = split_patients(DATA_DIR, train_ratio=0.8)
@@ -336,6 +362,15 @@ def main():
     # Create datasets with specific patients
     train_dataset = SleepSequenceDataset(DATA_DIR, patient_ids=train_patients)
     test_dataset = SleepSequenceDataset(DATA_DIR, patient_ids=test_patients)
+    
+    # Display a sample from the training set
+    sample, label = train_dataset[0]  # Get first sample
+    print(f"Sample shape: {sample.shape}")
+    print(f"Label: {label}")
+    plot_sample(sample.numpy(), label.numpy())
+    
+    # Wait for user input before continuing
+    input("Press Enter to continue with training...")
     
     # Create balanced sampler and get class weights
     train_sampler, class_weights = create_balanced_sampler(train_dataset)
