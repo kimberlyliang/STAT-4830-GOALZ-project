@@ -17,8 +17,8 @@ from sklearn.metrics import (
 )
 from sklearn.preprocessing import label_binarize
 
-DATA_DIR = 'processed_sleepedf'
-RESULT_DIR = 'results'
+DATA_DIR = '/Users/kimberly/Documents/STAT4830/STAT-4830-GOALZ-project/processed_sleepedf'
+RESULT_DIR = '/Users/kimberly/Documents/STAT4830/STAT-4830-GOALZ-project/results'
 os.makedirs(RESULT_DIR, exist_ok=True)
 
 print("Files in directory:", os.listdir(DATA_DIR))
