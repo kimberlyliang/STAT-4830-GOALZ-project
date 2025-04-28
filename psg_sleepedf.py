@@ -11,8 +11,7 @@ import mne
 # Configuration
 PROJECT_ROOT = "/Users/kimberly/Documents/STAT4830/STAT-4830-GOALZ-project"
 BASE_DIR = os.path.join(PROJECT_ROOT, "data/sleep-edf-database-expanded-1.0.0")
-SUBFOLDERS = ['sleep-cassette', 'sleep-telemetry'] # Subfolders with raw data
-# Output directory for the PSD features
+SUBFOLDERS = ['sleep-cassette', 'sleep-telemetry']
 FEATURES_DIR = os.path.join(PROJECT_ROOT, 'features_psd_sleep_edf')
 os.makedirs(FEATURES_DIR, exist_ok=True)
 
