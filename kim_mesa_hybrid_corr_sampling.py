@@ -31,8 +31,8 @@ from pathlib import Path
 # BASE = Path("/content/mydrive/MyDrive/4830_project/sleepedf_data")
 # print(f"Using base directory: {BASE!s}")
 # BASE = Path("/home1/k/kimliang/sleep/sleep_staging/data")
-BASE = Path("/Users/kimberly/Documents/STAT4830/STAT-4830-GOALZ-project/data")
-
+# BASE = Path("/Users/kimberly/Documents/STAT4830/STAT-4830-GOALZ-project/data")
+BASE = Path("/mnt/sauce/littlab/users/kimliang/sleep/STAT-4830-GOALZ-project/data")
 PROCESSED_DATA_DIR = BASE/"processed_mesa"
 CATCH22_DATA_DIR   = BASE/"c22_processed_mesa"
 PSD_DATA_DIR       = BASE/"features_psd_mesa"
