@@ -9,9 +9,9 @@ import pycatch22 as catch22
 import multiprocessing
 
 # Configuration for the Borel server
-BASE_DIR      = '/users/kimliang/sleep/STAT-4830-GOALZ-project/data/mesa'
-PROCESSED_DIR = '/users/kimliang/sleep/STAT-4830-GOALZ-project/data/processed_mesa'
-OUTPUT_DIR    = '/users/kimliang/sleep/STAT-4830-GOALZ-project/data/c22_processed_mesa'
+BASE_DIR      = '/Users/kimberly/Documents/STAT4830/STAT-4830-GOALZ-project/data/mesa'
+PROCESSED_DIR = '/Users/kimberly/Documents/STAT4830/STAT-4830-GOALZ-project/data/processed_mesa'
+OUTPUT_DIR    = '/Users/kimberly/Documents/STAT4830/STAT-4830-GOALZ-project/data/c22_processed_mesa'
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def get_true_subject_id(filename):
