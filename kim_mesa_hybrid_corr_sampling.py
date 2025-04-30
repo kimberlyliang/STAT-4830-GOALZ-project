@@ -570,7 +570,7 @@ class HybridSleepTransformer(nn.Module):
         class_tokens = self.class_tokens.expand(B, -1, -1)
         x_trans = self.transformer(torch.cat([x, class_tokens], dim=1))
         seq_out = x_trans[:, :S, :]
-        class_out = x_trans[:, S:, :]
+        # class_out = x_trans[:, S:, :] # Not currently used
 
         # multi-class output
         shared = self.dropout(F.relu(self.ln_shared(self.fc_shared(seq_out))))
@@ -580,13 +580,15 @@ class HybridSleepTransformer(nn.Module):
         # binary probability for N1 vs all for each time step
         n1_ovr_prob = self.n1_ovr_head(seq_out).squeeze(-1)
 
-        if self.training:
-            # during training, return both outputs for computing losses
-            return logits, n1_ovr_prob
-        else:
-            # inference: return both multi-class predictions and N1 probabilities
-            preds = logits.argmax(dim=-1)
-            return preds, n1_ovr_prob
+        # Always return logits and n1_ovr_prob, regardless of training/eval mode
+        return logits, n1_ovr_prob
+        # if self.training:
+        #     # during training, return both outputs for computing losses
+        #     return logits, n1_ovr_prob
+        # else:
+        #     # inference: return both multi-class predictions and N1 probabilities
+        #     preds = logits.argmax(dim=-1)
+        #     return preds, n1_ovr_prob # REMOVED: eval_epoch will calculate preds
 
 # ------------------------- 
 # ==== Plotting Utils ====
@@ -1049,30 +1051,23 @@ def eval_epoch(model, loader, apply_smoothing=True):
             psd = torch.nan_to_num(psd,0.0,1e5,-1e5).to(device)
             labels = labels.to(device)
 
-            # Forward pass
+            # Forward pass - model now always returns (logits, n1_ovr_prob)
             outputs = model(raw, c22, psd)
-
-            # Handle outputs based on model training mode
-            if isinstance(outputs, tuple):
-                # Assuming the first element is logits, second is N1 OvR prob
-                logits = outputs[0]
-                # We might use n1_ovr_prob later if needed
-            else:
-                logits = outputs
+            logits, n1_ovr_prob = outputs # Unpack consistently
 
             if not torch.isfinite(logits).all():
                 print("Warning: non-finite logits in evaluation")
                 continue
 
             # Calculate loss using logits
-            loss = focal_loss(logits, labels)
+            loss = focal_loss(logits, labels) # Now logits should be correct 3D shape
             running_loss += loss.item() * raw.size(0)
 
             # Get predictions (argmax from logits)
-            preds = logits.argmax(dim=-1)
+            preds = logits.argmax(dim=-1) # Calculate preds here
 
             # Calculate probabilities for metrics/plots
-            probs = torch.softmax(logits, dim=-1)
+            probs = torch.softmax(logits, dim=-1) # Calculate probs here
 
             # Store predictions, labels, and probabilities (flattened)
             all_raw_preds.append(preds.cpu().numpy().ravel())
