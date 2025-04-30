@@ -16,11 +16,7 @@ from sklearn.metrics import classification_report, confusion_matrix, roc_curve, 
 from sklearn.calibration import calibration_curve
 import matplotlib.pyplot as plt
 import seaborn as sns
-try:
-    import shap
-except ImportError:
-    print("SHAP library not found. Please install it (`pip install shap`) to enable SHAP plots.")
-    shap = None
+import shap
 
 # -------------------------
 # ==== Initialization ====
@@ -73,16 +69,6 @@ for sub in ["plots", "models", "metrics"]:
     print(f"Created directory: {RESULTS_DIR/sub}")
 
 print("Checking directory access:")
-# print(f"  {PROCESSED_DATA_DIR!s} exists: {PROCESSED_DATA_DIR.exists()}")
-# print(f"  {CATCH22_DATA_DIR!s} exists: {CATCH22_DATA_DIR.exists()}")
-
-# if not PROCESSED_DATA_DIR.exists() or not CATCH22_DATA_DIR.exists():
-#     print("ERROR: Data directories not found. Please re-run preprocessing & Catch22 steps.")
-#     sys.exit(1)
-
-# for sub in ["plots","models","metrics"]:
-#     (RESULTS_DIR/sub).mkdir(parents=True, exist_ok=True)
-
 # Reproducibility
 SEED = 42
 np.random.seed(SEED)
@@ -1059,8 +1045,12 @@ def eval_epoch(model, loader, apply_smoothing=True):
                 print("Warning: non-finite logits in evaluation")
                 continue
 
+            # ----> ADD THIS PRINT STATEMENT <----
+            print(f"Shape of logits passed to focal_loss: {logits.shape}")
+            # ------------------------------------
+
             # Calculate loss using logits
-            loss = focal_loss(logits, labels) # Now logits should be correct 3D shape
+            loss = focal_loss(logits, labels) # ERROR OCCURS HERE
             running_loss += loss.item() * raw.size(0)
 
             # Get predictions (argmax from logits)
