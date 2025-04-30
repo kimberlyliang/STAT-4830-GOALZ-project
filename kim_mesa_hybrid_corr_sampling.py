@@ -903,7 +903,7 @@ def mixup_batch(raw, c22, psd, labels, alpha=0.2):
     mixed_psd = lam * psd + (1 - lam) * psd[idx]
     return mixed_raw, mixed_c22, mixed_psd, labels, labels[idx], lam
 
-def train_epoch(model, loader, optimizer, scheduler=None, mixup_alpha=0.2):
+def train_epoch(model, loader, optimizer, scheduler=None, mixup_alpha=0.2, n1_loss_weight=0.5):
     model.train()
     running_loss = 0.0
     correct = 0
@@ -915,39 +915,61 @@ def train_epoch(model, loader, optimizer, scheduler=None, mixup_alpha=0.2):
         psd = torch.nan_to_num(psd, nan=0.0, posinf=1e5, neginf=-1e5).to(device)
         labels = labels.to(device)
 
-        if np.random.rand() < 0.5:
+        # Create binary target for N1 One-vs-Rest head
+        n1_binary_target = (labels == 1).float()
+
+        if np.random.rand() < 0.5 and mixup_alpha > 0: # Apply mixup
             mixed_raw, mixed_c22, mixed_psd, lbl_a, lbl_b, lam = mixup_batch(raw, c22, psd, labels, alpha=mixup_alpha)
+            n1_target_a = (lbl_a == 1).float()
+            n1_target_b = (lbl_b == 1).float()
             use_mixup = True
-        else:
+        else: # No mixup
             mixed_raw, mixed_c22, mixed_psd = raw, c22, psd
             lbl_a = labels
+            n1_target_a = n1_binary_target
             use_mixup = False
 
         optimizer.zero_grad()
 
-        # Forward pass with auxiliary outputs during training
+        # Forward pass - expects two outputs: logits and n1_ovr_prob
         outputs = model(mixed_raw, mixed_c22, mixed_psd)
+        # Unpack the two outputs
+        logits, n1_ovr_prob = outputs # Correct unpacking (2 outputs)
 
-        outputs = model(mixed_raw, mixed_c22, mixed_psd)
-        main_preds, aux_r, aux_c, aux_p = outputs
+        # --- Calculate Losses ---
+        # 1. Main multi-class focal loss
+        main_loss = focal_loss(logits, lbl_a) # Use lbl_a for non-mixup case too
 
-        main_loss = focal_loss(main_preds, lbl_a)
+        # 2. N1 One-vs-Rest binary cross-entropy loss
+        # Flatten probabilities and targets
+        n1_prob_flat = n1_ovr_prob.view(-1)
+        n1_target_a_flat = n1_target_a.view(-1)
+        # Clamp probabilities for numerical stability with BCE loss
+        n1_prob_clamped = torch.clamp(n1_prob_flat, 1e-7, 1 - 1e-7)
+        n1_loss = F.binary_cross_entropy(n1_prob_clamped, n1_target_a_flat)
+
+        # 3. Combine losses, applying mixup logic if necessary
         if use_mixup:
-            loss = main_loss \
-                + 0.3*(lam*focal_loss(aux_r,lbl_a)+(1-lam)*focal_loss(aux_r,lbl_b)) \
-                + 0.3*(lam*focal_loss(aux_c,lbl_a)+(1-lam)*focal_loss(aux_c,lbl_b)) \
-                + 0.3*(lam*focal_loss(aux_p,lbl_a)+(1-lam)*focal_loss(aux_p,lbl_b))
-        else:
-            loss = main_loss + 0.3*(focal_loss(aux_r,labels)+focal_loss(aux_c,labels)+focal_loss(aux_p,labels))
+            main_loss_b = focal_loss(logits, lbl_b) # Calculate loss for second label
+            main_loss_mixed = lam * main_loss + (1 - lam) * main_loss_b
 
+            n1_target_b_flat = n1_target_b.view(-1)
+            n1_loss_b = F.binary_cross_entropy(n1_prob_clamped, n1_target_b_flat)
+            n1_loss_mixed = lam * n1_loss + (1 - lam) * n1_loss_b
+            
+            total_loss = main_loss_mixed + n1_loss_weight * n1_loss_mixed
+        else:
+            total_loss = main_loss + n1_loss_weight * n1_loss
+        # --- End Loss Calculation ---
+        
         # Check for numerical stability
-        if not torch.isfinite(loss):
-            # print("Skipping batch: non-finite loss")
+        if not torch.isfinite(total_loss):
+            print(f"Warning: Skipping batch due to non-finite loss ({total_loss.item()})")
             continue
 
         # Backward pass and optimization
-        loss.backward()
-        nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)  # Increased from 0.5
+        total_loss.backward()
+        nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
         optimizer.step()
 
         # Update learning rate if using OneCycleLR or similar
@@ -958,14 +980,13 @@ def train_epoch(model, loader, optimizer, scheduler=None, mixup_alpha=0.2):
             scheduler.step()
 
         # Calculate running statistics
-        running_loss += loss.item() * raw.size(0)
+        running_loss += total_loss.item() * raw.size(0) # Use total_loss
 
         # Calculate accuracy (only for non-mixup batches)
         if not use_mixup:
-            preds = main_preds.argmax(dim=-1)
+            preds = logits.argmax(dim=-1) # Use logits for accuracy calculation
             correct += (preds == labels).sum().item()
             total += labels.numel()
-
 
     avg_loss = running_loss / len(loader.dataset)
     accuracy = correct / total if total > 0 else 0
