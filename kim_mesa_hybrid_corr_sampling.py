@@ -38,6 +38,35 @@ CATCH22_DATA_DIR   = BASE/"new_processed_mesa"/"c22_processed_mesa"
 PSD_DATA_DIR       = BASE/"features_psd_mesa"
 RESULTS_DIR        = BASE/"mesa_hybrid_model_results"
 
+# --- Print configured paths and file counts ---
+print("--- Configured Data Paths ---")
+print(f"Base Project Data Directory: {BASE}")
+print(f"Processed Raw Sequences Directory: {PROCESSED_DATA_DIR}")
+print(f"Catch22 Features Directory: {CATCH22_DATA_DIR}")
+print(f"PSD Features Directory: {PSD_DATA_DIR}")
+print(f"Results Directory: {RESULTS_DIR}")
+
+print("\n--- Checking File Counts in Data Directories ---")
+try:
+    raw_seq_files = glob.glob(str(PROCESSED_DATA_DIR / "*_sequences.npz"))
+    print(f"Found {len(raw_seq_files)} raw sequence files (*_sequences.npz) in {PROCESSED_DATA_DIR}")
+except Exception as e:
+    print(f"Error counting raw sequence files in {PROCESSED_DATA_DIR}: {e}")
+
+try:
+    c22_files = glob.glob(str(CATCH22_DATA_DIR / "*_c22.csv"))
+    print(f"Found {len(c22_files)} Catch22 feature files (*_c22.csv) in {CATCH22_DATA_DIR}")
+except Exception as e:
+    print(f"Error counting Catch22 files in {CATCH22_DATA_DIR}: {e}")
+
+try:
+    psd_files = glob.glob(str(PSD_DATA_DIR / "*_psd.npz"))
+    print(f"Found {len(psd_files)} PSD feature files (*_psd.npz) in {PSD_DATA_DIR}")
+except Exception as e:
+    print(f"Error counting PSD files in {PSD_DATA_DIR}: {e}")
+print("-------------------------------------------------")
+# --- End Print --- 
+
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 for sub in ["plots", "models", "metrics"]:
     (RESULTS_DIR/sub).mkdir(parents=True, exist_ok=True)
