@@ -18,7 +18,7 @@ if PROJECT_ROOT not in sys.path:
 # Import functions from the script to be tested
 # Make sure psg_sleepedf.py is importable (e.g., doesn't run main() on import directly without __main__ check)
 try:
-    from psg_sleepedf import (
+    from src.psg_sleepedf import (
         get_true_subject_id,
         bandpower_welch,
         extract_psd_features,
@@ -28,7 +28,7 @@ try:
     )
     # Temporarily override FEATURES_DIR for testing process_file if it's used globally
     # This assumes FEATURES_DIR is defined globally in psg_sleepedf.py
-    import psg_sleepedf 
+    import src.psg_sleepedf as psg_sleepedf 
     _original_features_dir = getattr(psg_sleepedf, 'FEATURES_DIR', None)
 
 except ImportError as e:

@@ -1,0 +1,48 @@
+# Project structure
+project_name: "anphy_analysis"
+root_dir: "."
+
+# math rendering
+kramdown:
+    math_engine: mathjax
+    input: GFM
+
+# Data paths
+data:
+  base_path: "${root_dir}/data/ANPHY-Sleep"
+  artifact_matrix: "${data.base_path}/Artifact matrix"
+  edf_data: "${data.base_path}"
+  subjects:
+    - "EPCTL01"
+    - "EPCTL02"
+    - "EPCTL03"
+
+# Results paths
+results:
+  base_path: "${root_dir}/results"
+  features:
+    anphy_features: "${results.base_path}/anphy_features.csv"
+    anphy_features_10min: "${results.base_path}/anphy_features_10min_seg.csv"
+    psd_features_10min: "${results.base_path}/pds_feats_10min.csv"
+  sleep_data: "${results.base_path}/combined_sleep_data.csv"
+
+# Reports path
+reports:
+  path: "${root_dir}/reports"
+
+# Notebooks paths
+notebooks:
+  base_path: "${root_dir}/notebooks"
+  anphy_code:
+    path: "${notebooks.base_path}/anphy_code"
+    psd_extraction: "${notebooks.anphy_code.path}/psd_feat_extraction.py"
+
+# Data processing parameters
+processing:
+  sampling_rate: 1000  # Hz
+  segment_duration: 600  # 10 minutes in seconds
+  channels_of_interest: 
+    - "C3-Ref"
+    - "C4-Ref"
+    - "F3-Ref"
+    - "F4-Ref" 
