@@ -7,12 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1T0W0H0RjqReAb6kUNEhFxMgJzLddMoSB
 """
 
-!pip install torch_geometric
-!pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-$(python -c 'import torch; print(torch.__version__)').html
-
-from google.colab import drive
-drive.mount('/content/drive', force_remount=True)
-
 # Complete Sleep Stage Classification with Graph Neural Networks
 # Improved version with lazy loading and verbose progress reporting
 
